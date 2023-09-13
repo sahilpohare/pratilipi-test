@@ -1,0 +1,64 @@
+{
+  "name": "pratilipi-test",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "apps/pratilipi-test/src",
+  "projectType": "application",
+  "targets": {
+    "build": {
+      "executor": "@nx/webpack:webpack",
+      "outputs": ["{options.outputPath}"],
+      "defaultConfiguration": "production",
+      "options": {
+        "target": "node",
+        "compiler": "tsc",
+        "outputPath": "dist/apps/pratilipi-test",
+        "main": "apps/pratilipi-test/src/main.ts",
+        "tsConfig": "apps/pratilipi-test/tsconfig.app.json",
+        "assets": ["apps/pratilipi-test/src/assets"],
+        "isolatedConfig": true,
+        "webpackConfig": "apps/pratilipi-test/webpack.config.js"
+      },
+      "configurations": {
+        "development": {},
+        "production": {}
+      }
+    },
+    "serve": {
+      "executor": "@nx/js:node",
+      "defaultConfiguration": "development",
+      "options": {
+        "buildTarget": "pratilipi-test:build"
+      },
+      "configurations": {
+        "development": {
+          "buildTarget": "pratilipi-test:build:development"
+        },
+        "production": {
+          "buildTarget": "pratilipi-test:build:production"
+        }
+      }
+    },
+    "lint": {
+      "executor": "@nx/linter:eslint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": ["apps/pratilipi-test/**/*.ts"]
+      }
+    },
+    "test": {
+      "executor": "@nx/jest:jest",
+      "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
+      "options": {
+        "jestConfig": "apps/pratilipi-test/jest.config.ts",
+        "passWithNoTests": true
+      },
+      "configurations": {
+        "ci": {
+          "ci": true,
+          "codeCoverage": true
+        }
+      }
+    }
+  },
+  "tags": []
+}
