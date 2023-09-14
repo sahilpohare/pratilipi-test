@@ -18,8 +18,8 @@ import { GetUser } from '../decorators/user.decorator';
 
 @UseGuards(AuthGuard)
 @ApiBearerAuth('JWT')
-@Controller()
 @ApiTags('Interactions')
+@Controller()
 export class InteractionsController {
   constructor(
     private readonly appService: AppService,
