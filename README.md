@@ -11,6 +11,29 @@ Make sure you have docker installed on your machine. If not, please install it f
 
 Run `docker compose up` to start the app. Navigate to `http://localhost:5000/docs`. The app will automatically reload if you change any of the source files.
 
+## The File Structure
+The app is a monorepo. It contains 3 apps:
+- **user-api**: This app contains the users service and gateway.
+- **content-service**: This app contains the content service.
+- **user-interactions-api**: This app contains the interactions service.
+
+```
+    apps
+    |   |
+    |  src___
+    |       |
+    |       |__ user-api
+    |               |__ users
+    |               |__ interactions
+    |               |__ posts
+    |       |__ content-service
+    |       |__ user-interactions-api
+    |       |__ shared
+    |       |__ migarations
+    |   
+    |_____migrations
+
+```
 ## The Architecture
 ![Architecture Diagram](
     https://i.imgur.com/JW4yBqJ.png
