@@ -50,7 +50,7 @@ export class ContentService {
 
   async bulkInsert(userId: number, data: { title: string; story: string }[]) {
     const content = data.map((d) =>
-      this.contentRepository.create({ userId, ...d })
+      this.contentRepository.create({ user_id: userId, ...d })
     );
     return await this.contentRepository.save(content);
   }
@@ -65,6 +65,6 @@ export class ContentService {
   }
 
   async getAllContent(userId: number) {
-    return await this.contentRepository.find({ where: { userId } });
+    return await this.contentRepository.find({ where: { user_id:userId } });
   }
 }

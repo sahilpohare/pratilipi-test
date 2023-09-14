@@ -1,5 +1,5 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { IsString, IsNotEmpty, IsDateString } from "class-validator";
+import { IsString, IsNotEmpty, IsDateString, IsOptional } from "class-validator";
 
 export class CreatePostDto {
     @ApiProperty()
@@ -11,7 +11,8 @@ export class CreatePostDto {
     @IsString()
     @IsNotEmpty()
     story: string;
-    
+
+    @IsOptional()
     @ApiProperty()
     @IsDateString()
     published?: Date;

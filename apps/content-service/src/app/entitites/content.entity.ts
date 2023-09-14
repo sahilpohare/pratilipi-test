@@ -12,21 +12,21 @@ export class Content {
     story: string;
 
     @CreateDateColumn()
-    createdAt: Date;
+    created_at: Date;
 
     @DeleteDateColumn()
-    deletedAt: Date;
+    deleted_at: Date;
 
     @Column()
-    userId: number;
+    user_id: number;
 
     @Column()
-    publishedDate: Date;
+    published_date: Date;
 
     @BeforeInsert()
     setPublishedDate() {
-        if (!this.publishedDate) {
-            this.publishedDate = new Date();
+        if (!this.published_date) {
+            this.published_date = new Date();
         }
     }
 }

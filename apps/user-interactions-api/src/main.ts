@@ -19,7 +19,9 @@ async function bootstrap() {
     }
   );
   app.useGlobalPipes(new ValidationPipe({transform: true}));
-  app.listen();
+  app.listen().then(() => {
+    Logger.log(`🚀 Application is running on: ${port}`);
+  })
 }
 
 bootstrap();
