@@ -10,11 +10,10 @@ import { AppModule as ContentModule } from './app/content.module';
 import { MicroserviceOptions, Transport } from '@nestjs/microservices';
 
 async function bootstrap() {
-  // CONTENT_SERVICE 
-  const contentService = process.env.CONTENT_SERVICE || 'localhost:5002';
+  const port = parseInt(process.env.PORT) || 5000;
   const options = {
-    host: contentService.split(':')[0],
-    port: parseInt(contentService.split(':')[1]),
+    host: '0.0.0.0',
+    port,
   };
 
   const app = await NestFactory.createMicroservice<MicroserviceOptions>(

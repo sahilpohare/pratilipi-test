@@ -1,31 +1,26 @@
 import {
+  BadRequestException,
   Body,
   Controller,
   Get,
   Inject,
-  Logger,
   Param,
   Post,
-  UploadedFile,
   UseGuards,
-  UseInterceptors,
 } from '@nestjs/common';
 
 import { AppService } from './app.service';
 import { ClientProxy } from '@nestjs/microservices';
 import { AddInteractionDto } from './dtos/interactions.dto';
-import { FileInterceptor } from '@nestjs/platform-express';
-import { Multer } from 'multer';
 import { AuthGuard } from '../guards/auth.guard';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { GetUser } from '../decorators/user.decorator';
-import { User } from '../user/entities/user.entity';
-import { CreatePostDto } from './dtos/posts.dto';
-import { ApiBearerAuth } from '@nestjs/swagger';
 
 @UseGuards(AuthGuard)
 @ApiBearerAuth('JWT')
 @Controller()
-export class AppController {
+@ApiTags('Interactions')
+export class InteractionsController {
   constructor(
     private readonly appService: AppService,
     @Inject('INTERACTIONS_SERVICE')
@@ -34,8 +29,14 @@ export class AppController {
   ) {}
 
   @Post('add-interaction')
-  addLike(@Body() data: AddInteractionDto) {
-    return this.interactionsService.send({ cmd: 'addInteraction' }, data);
+  async addLike(@GetUser() user, @Body() data: AddInteractionDto) {
+    const out = this.interactionsService
+      .send({ cmd: 'addInteraction' }, { data, userId: user.id })
+      .toPromise() as any;
+    if (!out.status) {
+      throw new BadRequestException('Invalid Post Id');
+    }
+    return out;
   }
 
   @Post('posts/:postId/remove-interaction')
@@ -55,36 +56,6 @@ export class AppController {
       { cmd: 'getInteractionsCountForPost' },
       {
         postId,
-      }
-    );
-  }
-
-  @Post('posts')
-  addPost(@GetUser() user, @Body() data: CreatePostDto) {
-    return this.contentService.send(
-      { cmd: 'addContent' },
-      { ...data, userId: user.id }
-    );
-  }
-
-  @Post('posts/bulk-add')
-  @UseInterceptors(FileInterceptor('file'))
-  bulkAdd(@GetUser() user: User, @UploadedFile() file: Express.Multer.File) {
-    if (file.mimetype !== 'text/csv') {
-      return {
-        message: 'Invalid file type',
-      };
-    }
-
-    // send file to content service
-    return this.contentService.send(
-      { cmd: 'bulkAdd' },
-      {
-        user: {
-          id: user.id,
-          name: user.name,
-        },
-        data: file.buffer.toString(),
       }
     );
   }

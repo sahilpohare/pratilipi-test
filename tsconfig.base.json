@@ -15,7 +15,8 @@
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
     "paths": {
-      "@users-api/models": ["models/src/index.ts"]
+      "@users-api/models": ["models/src/index.ts"],
+      "@users-api/shared": ["shared/src/index.ts"]
     }
   },
   "exclude": ["node_modules", "tmp"]

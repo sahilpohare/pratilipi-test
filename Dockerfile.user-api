@@ -1,0 +1,23 @@
+FROM node:latest
+
+WORKDIR /app
+
+COPY . .
+
+RUN npm install
+RUN npm install --save sqlite3
+RUN npm i -g nx@latest
+RUN npm install -g create-nx-workspace
+
+USER root
+RUN nx run-many --target=build -p users-api --prod
+
+ENV PORT 5000
+EXPOSE $PORT
+
+
+
+# Start the specified Nx app
+ENTRYPOINT npx nx run-many -t serve -p users-api 
+
+

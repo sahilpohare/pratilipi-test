@@ -1,0 +1,100 @@
+version: '3'
+services:
+  postgres:
+    image: postgres:latest
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5439:5432"
+    volumes:
+      - ./postgres-data:/var/lib/postgresql/data
+  
+  migrations:
+    depends_on:
+      - postgres
+    build:
+      context: .
+      dockerfile: Dockerfile.migrator
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_HOST=host.docker.internal
+      - POSTGRES_PORT=5439
+  content-service:
+    depends_on:
+      - postgres
+    build:
+      context: .
+      dockerfile: Dockerfile.content-service
+      args:
+        NX_APP: content-service 
+    ports:
+      - "5002:5000" 
+    volumes:
+      - .:/app 
+      - /app/node_modules
+    environment:
+      - PORT=5000
+      - SECRET=users-secret
+      - INTERACTIONS_SERVICE=0.0.0.0:5001
+      - CONTENT_SERVICE=0.0.0.0:5003
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_HOST=host.docker.internal
+      - POSTGRES_PORT=5439
+      - POSTGRES_DB=content
+
+  user-interactions-api:
+    depends_on:
+      - postgres
+
+    build:
+      context: .
+      dockerfile: Dockerfile.interactions
+      args:
+        NX_APP: user-interactions-api 
+    environment:
+      - PORT=5000
+      - SECRET=users-secret
+      - INTERACTIONS_SERVICE=0.0.0.0:5001
+      - CONTENT_SERVICE=0.0.0.0:5003
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_HOST=host.docker.internal
+      - POSTGRES_PORT=5439
+      - POSTGRES_DB=interactions
+    ports:
+      - "5001:5000" 
+    volumes:
+      - .:/app 
+      - /app/node_modules
+
+
+  users-api:
+    depends_on:
+      - postgres
+      - user-interactions-api
+      - content-service
+    build:
+      context: . 
+      dockerfile: Dockerfile.user-api
+      args:
+        NX_APP: users-api  
+    environment:
+      - PORT=5000
+      - SECRET=users-secret
+      - INTERACTIONS_SERVICE=0.0.0.0:5001
+      - CONTENT_SERVICE=0.0.0.0:5003
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_HOST=host.docker.internal
+      - POSTGRES_PORT=5439
+      - POSTGRES_DB=users
+    ports:
+      - "5000:5000"  
+    volumes:
+      - .:/app
+      - /app/node_modules
+
+  

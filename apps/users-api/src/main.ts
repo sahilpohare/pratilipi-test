@@ -3,15 +3,18 @@
  * This is only a minimal backend to get started.
  */
 
-import { Logger, ValidationPipe } from '@nestjs/common';
+import { ConsoleLogger, Logger, ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 
 import { AppModule } from './app/app.module';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import { CustomLogger } from '../../../shared/src';
+import { ExceptionsHandler } from '@nestjs/core/exceptions/exceptions-handler';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   const globalPrefix = 'api';
+  app.useLogger(new ConsoleLogger("api"));
   app.setGlobalPrefix(globalPrefix);
   app.useGlobalPipes(new ValidationPipe({ transform: true }));
   const port = process.env.PORT || 5000;
@@ -37,10 +40,8 @@ async function bootstrap() {
   SwaggerModule.setup('docs', app, document);
   app.use((req, res, next) => {
     console.log(
-      `[${req.method}] ${req.originalUrl}`,
-      req.query,
-      req.headers,
-      req.body,
+      `[${new Date().toLocaleString()}] [${req.method}] ${req.originalUrl}`,
+      `${req.body || ''}`
     );
     next();
   });

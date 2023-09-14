@@ -1,6 +1,6 @@
-import { Module } from '@nestjs/common';
+import { Module, OnModuleInit } from '@nestjs/common';
 
-import { AppController } from './app.controller';
+import { InteractionsController } from './app.controller';
 import { AppService } from './app.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { UserModule } from '../user/user.module';
@@ -10,27 +10,41 @@ import {
 } from '@nestjs/microservices';
 import { ConfigFactory, ConfigModule, ConfigService } from '@nestjs/config';
 import { JwtModule } from '@nestjs/jwt';
+import { PostsController } from '../posts/posts.controller';
+import { MulterModule } from '@nestjs/platform-express';
 
 @Module({
   imports: [
     TypeOrmModule.forRoot({
-      type: 'sqlite',
-      database: 'users.db',
+      type: 'postgres',
+
+      host: process.env['POSTGRES_HOST'],
+      port: parseInt(process.env['POSTGRES_PORT']),
+      username: process.env['POSTGRES_USER'],
+      password: process.env['POSTGRES_PASSWORD'],
+      database: process.env['POSTGRES_DB'],
+
       entities: [__dirname + '/**/*.entity{.ts,.js}'],
       synchronize: true,
       autoLoadEntities: true,
+      migrationsTableName: 'migration',
+
+      migrations: [__dirname+'**/migrations/*{.ts,.js}'],
     }),
     UserModule,
+    MulterModule.register({
+      dest: './uploads',
+    }),
     ConfigModule.forRoot(),
     JwtModule.register({
       global: true,
       secret: process.env['SECRET'],
       signOptions: {
-        expiresIn: '60s'
+        expiresIn: '1d'
       }
     })
   ],
-  controllers: [AppController],
+  controllers: [InteractionsController, PostsController],
   providers: [
     AppService,
     {
@@ -59,4 +73,4 @@ import { JwtModule } from '@nestjs/jwt';
     }
   ],
 })
-export class AppModule {}
+export class AppModule{}

@@ -1,0 +1,15 @@
+FROM governmentpaas/psql:latest
+
+WORKDIR /app
+COPY ./migrations ./migrations
+COPY ./migrator.sh ./scripts/migrator.sh
+RUN chmod +x ./scripts/migrator.sh
+
+ENV POSTGRES_USER postgres
+ENV POSTGRES_PASSWORD postgres
+ENV POSTGRES_HOST host.docker.internal
+ENV POSTGRES_PORT 5439
+
+CMD sh ./scripts/migrator.sh
+
+

@@ -5,6 +5,7 @@ import { User } from './entities/user.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { JwtService } from '@nestjs/jwt';
+import { OmitType } from '@nestjs/mapped-types';
 
 @Injectable()
 export class UserService {
@@ -49,7 +50,7 @@ export class UserService {
     password: string
   ): Promise<{
     accessToken: string;
-    user: User;
+    user:Omit<User, 'password'>;
   }> {
     const user = await this.userRepository.findOne({
       where: { name },
@@ -59,12 +60,17 @@ export class UserService {
       throw new UnauthorizedException('Invalid credentials');
     }
 
+    const accessToken = this.jwtService.sign({
+      id: user.id,
+      name: user.name,
+    });
+
     return {
-      accessToken: this.jwtService.sign({
+      accessToken,
+      user: {
         id: user.id,
         name: user.name,
-      }),
-      user,
+      } as Omit<User, 'password'>,
     };
   }
 

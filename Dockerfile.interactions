@@ -1,0 +1,16 @@
+FROM node:latest
+
+WORKDIR /app
+
+COPY . .
+RUN npm install
+RUN npm install --save sqlite3
+RUN npm i -g nx@latest
+RUN npm install -g create-nx-workspace
+
+USER root
+RUN nx run-many --target=build -p user-interactions-api --prod
+
+RUN chmod +x start.sh
+
+ENTRYPOINT npx nx run-many -t serve -p user-interactions-api
