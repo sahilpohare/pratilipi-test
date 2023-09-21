@@ -44,14 +44,13 @@ export class ContentService {
   }
 
   async addContent(data: { user_id: number; title: string; story: string, published: any }) {
-    console.log(data)
     const content = this.contentRepository.create({
       user_id: data.user_id,
       title: data.title,
       story: data.story,
       published_date: data.published
     });
-    console.log(content)
+   
     return await this.contentRepository.save(content);
   }
 
