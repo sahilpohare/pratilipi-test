@@ -6,31 +6,31 @@ export class AddInteractionDto {
   @IsNotEmpty()
   @IsString()
   @IsIn(['like', 'dislike'])
-  type: string;
+  interaction_type: string;
 
   @ApiProperty()
   @IsNotEmpty()
   @IsInt()
-  resourceId: string;
+  resource_id: number;
 }
 
 export class RemoveInteractionDto {
   @ApiProperty()
   @IsNotEmpty()
   @IsInt()
-  resourceId: string;
+  resource_id: number;
 
   @ApiProperty()
   @IsNotEmpty()
   @IsInt()
-  userId: string;
+  user_id: string;
 }
 
 export class GetInteractionsCountForPostDto {
   @ApiProperty()
   @IsNotEmpty()
   @IsInt()
-  postId: string;
+  post_id: string;
 }
 
 export class InteractionsCount {

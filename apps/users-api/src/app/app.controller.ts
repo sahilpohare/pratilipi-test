@@ -30,9 +30,10 @@ export class InteractionsController {
 
   @Post('add-interaction')
   async addLike(@GetUser() user, @Body() data: AddInteractionDto) {
-    const out = this.interactionsService
-      .send({ cmd: 'addInteraction' }, { data, userId: user.id })
+    const out = await this.interactionsService
+      .send({ cmd: 'addInteraction' }, { ...data, user_id: user.id })
       .toPromise() as any;
+    console.log(out);
     if (!out.status) {
       throw new BadRequestException('Invalid Post Id');
     }
@@ -40,12 +41,14 @@ export class InteractionsController {
   }
 
   @Post('posts/:postId/remove-interaction')
-  removeLike(@Body() data: AddInteractionDto, @Param('postId') postId: number) {
-    return this.interactionsService.send(
+  async removeLike(
+    @GetUser() user,
+    @Param('postId') postId: number) {
+    return await this.interactionsService.send(
       { cmd: 'removeInteraction' },
       {
-        ...data,
-        resourceId: postId,
+        resource_id: postId,
+        user_id: user.id
       }
     );
   }
@@ -55,7 +58,7 @@ export class InteractionsController {
     return this.interactionsService.send(
       { cmd: 'getInteractionsCountForPost' },
       {
-        postId,
+        post_id: postId,
       }
     );
   }

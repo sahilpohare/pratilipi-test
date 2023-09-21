@@ -11,6 +11,4 @@ RUN npm install -g create-nx-workspace
 USER root
 RUN nx run-many --target=build -p user-interactions-api --prod
 
-RUN chmod +x start.sh
-
 ENTRYPOINT npx nx run-many -t serve -p user-interactions-api

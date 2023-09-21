@@ -41,7 +41,7 @@ export class PostsController {
     return this.contentService.send(
       { cmd: 'getAllContent' },
       {
-        userId: user.id,
+        user_id: user.id,
       }
     );
   }
@@ -50,7 +50,7 @@ export class PostsController {
   addPost(@GetUser() user, @Body() data: CreatePostDto) {
     return this.contentService.send(
       { cmd: 'addContent' },
-      { ...data, userId: user.id }
+      { ...data, user_id: user.id }
     );
   }
 
@@ -72,7 +72,7 @@ export class PostsController {
       throw new BadRequestException('Invalid file type');
     }
 
-    return await firstValueFrom(this.contentService.send(
+    return await this.contentService.send(
       { cmd: 'bulkAdd' },
       {
         user: {
@@ -81,6 +81,6 @@ export class PostsController {
         },
         data: f,
       }
-    ));
+    ).toPromise();
   }
 }

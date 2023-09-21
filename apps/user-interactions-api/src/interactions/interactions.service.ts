@@ -17,19 +17,19 @@ export class InteractionsService {
     return await this.interactionRepository.save(interaction);
   }
 
-  async removeInteraction(userId: number, resourceId: number) {
-    const res = await this.interactionRepository.softDelete({ userId, resourceId });
+  async removeInteraction(user_id: number, resource_id: number) {
+    const res = await this.interactionRepository.softDelete({ user_id, resource_id });
     return res.affected;
   }
 
-  async getInteractionsCountForPost(postId: number) : Promise<{ likes: number; dislikes: number; }> {
-    const interactions = await this.interactionRepository.find({ where: { resourceId: postId } });
+  async getInteractionsCountForPost(post_id: number) : Promise<{ likes: number; dislikes: number; }> {
+    const interactions = await this.interactionRepository.find({ where: { resource_id: post_id } });
     if (!interactions) {
       return { likes: 0, dislikes: 0 };
     }
 
-    const likes = interactions.filter(i => i.interactionType === 'like').length;
-    const dislikes = interactions.filter(i => i.interactionType === 'dislike').length;
+    const likes = interactions.filter(i => i.interaction_type === 'like').length;
+    const dislikes = interactions.filter(i => i.interaction_type === 'dislike').length;
 
     return { likes, dislikes };
   }

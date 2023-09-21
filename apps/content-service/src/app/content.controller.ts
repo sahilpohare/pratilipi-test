@@ -22,7 +22,8 @@ export class AppController {
   }
 
   @MessagePattern({ cmd: 'addContent' })
-  async addContent(data: { userId: number; title: string; story: string }) {
+  async addContent(data: { user_id: number; title: string; story: string, published : any}) {
+    console.log(data)
     return await this.contentService.addContent(data);
   }
 

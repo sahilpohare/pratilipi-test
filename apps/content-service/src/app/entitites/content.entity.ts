@@ -10,7 +10,7 @@ export class Content {
 
     @Column()
     story: string;
-
+    
     @CreateDateColumn()
     created_at: Date;
 

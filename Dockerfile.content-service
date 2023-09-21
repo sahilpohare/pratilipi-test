@@ -15,8 +15,6 @@ RUN nx run-many --target=build -p content-service --prod
 ENV PORT 5000
 EXPOSE $PORT
 
-
-
 # Start the specified Nx app
 ENTRYPOINT npx nx run-many -t serve -p content-service
 

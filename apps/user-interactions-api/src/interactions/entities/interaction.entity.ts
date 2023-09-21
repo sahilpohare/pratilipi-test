@@ -6,17 +6,17 @@ export class Interaction {
     id: number;
 
     @Column()
-    userId: number;
+    user_id: number;
 
     @Column()
-    interactionType: string;
+    interaction_type: string;
     
     @Column()
-    resourceId: number;
+    resource_id: number;
 
     @CreateDateColumn()
-    createdAt: Date;
+    created_at: Date;
 
     @DeleteDateColumn()
-    deletedAt: Date;
+    deleted_at: Date;
 }
