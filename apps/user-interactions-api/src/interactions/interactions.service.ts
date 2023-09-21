@@ -13,13 +13,11 @@ export class InteractionsService {
   ) { }
   
   async addInteraction(createInteractionDto: CreateInteractionDto) {
-    console.log(">>>>>",createInteractionDto)
     const interaction = this.interactionRepository.create(createInteractionDto);
     return await this.interactionRepository.save(interaction);
   }
 
   async removeInteraction(user_id: number, resource_id: number) {
-    console.log(">>>>>>>>>> REMOVE", user_id, resource_id);
     const res = await this.interactionRepository.softDelete({ user_id, resource_id });
     return res.affected;
   }
