@@ -12,13 +12,13 @@ export class AppController {
 
   @MessagePattern({ cmd: 'addInteraction' })
   async addInteraction(data: {
-    userId: number;
-    resourceId: number;
-    type: string;
+    user_id: number;
+    resource_id: number;
+    interaction_type: string;
   }) {
     Logger.log('addInteraction called', 'AppController', data);
-    
-    const content = await this.contentService.send({ cmd: 'getContentById' }, { id: data.resourceId}).toPromise();
+    console.log(">>>>> CONTROLLER",data)
+    const content = await this.contentService.send({ cmd: 'getContentById' }, { id: data.resource_id}).toPromise();
     if (!content) {
       return {
         status: false,
@@ -32,28 +32,35 @@ export class AppController {
       status : true,
       content,
       interaction : await this.interactionsService.addInteraction({
-        interactionType: data.type,
-        userId: data.userId,
-        resourceId: data.resourceId,
+        interaction_type: data.interaction_type,
+        user_id: data.user_id,
+        resource_id: data.resource_id,
       })
     };
   }
 
   @MessagePattern({ cmd: 'removeInteraction' })
-  async removeInteraction(data: { userId: number; resourceId: number }) {
+  async removeInteraction(data: { user_id: number; resource_id: number }) {
     Logger.log('removeInteraction called', 'AppController', data);
-
-    return await this.interactionsService.removeInteraction(
-      data.userId,
-      data.resourceId
+    const out = await this.interactionsService.removeInteraction(
+      data.user_id,
+      data.resource_id
     );
+
+    if (out > 0) {
+      return {
+        status: true
+      }
+    }
+
+    return { status : false }
   }
 
   @MessagePattern({ cmd: 'getInteractionsCountForPost' })
-  async getInteractionsCountForPost(data: { postId: number }) {
+  async getInteractionsCountForPost(data: { post_id: number }) {
     Logger.log('getInteractionsCountForPost called', 'AppController', data);
     return await this.interactionsService.getInteractionsCountForPost(
-      data.postId
+      data.post_id
     );
   }
 }

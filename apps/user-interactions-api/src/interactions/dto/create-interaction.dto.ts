@@ -3,13 +3,13 @@ import { IsEnum, IsNotEmpty, IsNumber } from "class-validator";
 export class CreateInteractionDto {
     @IsNotEmpty()
     @IsNumber()
-    userId: number;
+    user_id: number;
 
     @IsNotEmpty()
     @IsEnum(['like', 'dislike'])
-    interactionType: string;
+    interaction_type: string;
 
     @IsNotEmpty()
     @IsNumber()
-    resourceId: number;
+    resource_id: number;
 }
