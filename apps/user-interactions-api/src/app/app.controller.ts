@@ -17,7 +17,7 @@ export class AppController {
     interaction_type: string;
   }) {
     Logger.log('addInteraction called', 'AppController', data);
-    console.log(">>>>> CONTROLLER",data)
+    
     const content = await this.contentService.send({ cmd: 'getContentById' }, { id: data.resource_id}).toPromise();
     if (!content) {
       return {
